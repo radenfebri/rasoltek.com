@@ -1,0 +1,8 @@
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  /* Avoid a late system-font to Manrope swap during PHP page navigation. */
+  font-display: optional;
+  src: url('../fonts/manrope-latin.woff2') format('woff2');
+}

@@ -1,0 +1,49 @@
+# Contoh portable: taruh DI DALAM server block NGINX produksi.
+# Bukan konfigurasi FlyEnv dan tidak diterapkan otomatis.
+# Atur root ke lokasi proyek pada server Anda, aktifkan TLS lewat panel,
+# dan ganti fastcgi_pass dengan socket/upstream PHP-FPM milik hosting Anda.
+
+index index.php;
+autoindex off;
+
+location ~ /\.(?!well-known(?:/|$)) { return 404; }
+location ~* ^/(?:config|includes|components|src|vendor|node_modules|deploy|tests)(?:/|$) { return 404; }
+location ~* ^/(?:package(?:-lock)?\.json|composer\.(?:json|lock)|tailwind\.config\.js|README\.md|SECURITY\.md|DEPLOY\.md|flyenv-nginx\.conf)$ { return 404; }
+location ~* \.(?:bak|old|orig|save|swp|log|sql|sqlite|ini|env|zip|tar|gz|7z)$ { return 404; }
+location ~* ^/assets/.*\.php { return 404; }
+
+# XML/TXT dihasilkan oleh PHP, tidak disajikan sebagai source PHP.
+location = /sitemap.xml {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root/sitemap.php;
+    fastcgi_param SCRIPT_NAME /sitemap.php;
+    fastcgi_param REQUEST_URI $request_uri;
+    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+}
+location = /robots.txt {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root/robots.php;
+    fastcgi_param SCRIPT_NAME /robots.php;
+    fastcgi_param REQUEST_URI $request_uri;
+    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+}
+
+location / {
+    try_files $uri $uri/ @rasoltek_router;
+}
+location @rasoltek_router {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root/router.php;
+    fastcgi_param SCRIPT_NAME /router.php;
+    fastcgi_param REQUEST_URI $request_uri;
+    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+}
+
+# Wajib ada agar NGINX mengeksekusi PHP, tidak mengunduh source.
+location ~ \.php$ {
+    try_files $uri =404;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+}

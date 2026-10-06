@@ -1,0 +1,14 @@
+.hosting-billing{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:36px}
+.hosting-billing strong{font-size:14px;color:var(--text)}
+.hosting-billing p{margin:7px 0 0;font-size:12px;color:var(--muted);line-height:1.7}
+.hosting-price-block{margin-top:22px;min-height:126px}
+.hosting-card .hosting-price-block .price-line{margin:8px 0 0;flex-wrap:wrap}
+.hosting-promo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:26px}
+.hosting-promo del{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.hosting-saving{padding:5px 9px;border:1px solid rgba(22,163,74,.18);border-radius:8px;background:#dcfce7;color:#166534;font-size:11px;font-weight:800}
+.hosting-price-note{margin:8px 0 0;font-size:12px;line-height:1.7;color:var(--muted)}
+.hosting-promo-note{margin:5px 0 0;font-size:10px;line-height:1.6;color:var(--muted)}
+.hosting-price-block [hidden]{display:none}
+html[data-theme="dark"] .hosting-saving{border-color:rgba(74,222,128,.25);background:rgba(22,101,52,.2);color:#bbf7d0}
+@media(max-width:960px){.hosting-billing{align-items:flex-start;flex-direction:column}.hosting-billing .billing-tabs{max-width:100%}}
+@media(max-width:640px){.hosting-billing{gap:18px}.hosting-billing .billing-tabs{width:100%}.hosting-billing .tab-btn{padding-inline:10px}.hosting-price-block{min-height:0}.hosting-promo-note{max-width:270px}}

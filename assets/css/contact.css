@@ -1,0 +1,5 @@
+#contact-form { scroll-margin-top: 100px; }
+.contact-mail-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.contact-mail-status { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.7; }
+.contact-mail-status[hidden] { display: none; }
+.contact-mail-status a { color: var(--cyan-dark); font-weight: 800; text-decoration: underline; }

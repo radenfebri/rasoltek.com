@@ -1,0 +1,61 @@
+# Apache only. NGINX does not read .htaccess.
+
+Options -Indexes
+DirectoryIndex index.php
+
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "^(package(?:-lock)?\.json|composer\.(?:json|lock)|tailwind\.config\.js|README\.md|SECURITY\.md|DEPLOY\.md|flyenv-nginx\.conf)$">
+  Require all denied
+</FilesMatch>
+
+RewriteEngine On
+
+# Reject internal includes and backups before passing real files through.
+RewriteRule ^(?:config|includes|components|src|vendor|node_modules|deploy|tests)(?:/|$) - [R=404,L,NC]
+RewriteRule (^|/)\.(?!well-known(?:/|$)) - [R=404,L]
+RewriteRule \.(?:bak|old|orig|save|swp|log|sql|sqlite|ini|env|zip|tar|gz|7z)$ - [R=404,L,NC]
+RewriteRule ^assets/.*\.php - [R=404,L,NC]
+
+# Production hostname only; localhost and development domains are untouched.
+# Keep ACME validation available when issuing/renewing SSL certificates.
+RewriteCond %{HTTP_HOST} ^rasoltek\.com(?::[0-9]+)?$ [NC]
+RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/ [NC]
+RewriteRule ^(.*)$ https://www.rasoltek.com/$1 [R=301,L]
+
+# Public SEO resources keep their conventional URLs.
+RewriteCond %{THE_REQUEST} \s/+sitemap(?:\.php)?[\s?] [NC]
+RewriteRule ^sitemap(?:\.php)?$ sitemap.xml [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+robots(?:\.php)?[\s?] [NC]
+RewriteRule ^robots(?:\.php)?$ robots.txt [R=301,L]
+RewriteRule ^sitemap\.xml$ sitemap.php [END]
+RewriteRule ^robots\.txt$ robots.php [END]
+
+# Hide /index.php.
+RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
+RewriteRule ^index\.php$ ./ [R=301,L]
+
+# Hide direct .php URLs, e.g. /domain.php -> /domain.
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteCond %{REQUEST_METHOD} ^(?:GET|HEAD)$
+RewriteRule ^(.+)\.php$ $1 [R=301,L,NE]
+
+# Let real files and folders pass through.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route everything else through the PHP router.
+RewriteRule ^ router.php [L,QSA]
+
+ErrorDocument 404 /404.php
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set X-Frame-Options "DENY"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'self' mailto: https://portal.rasoltek.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'"
+</IfModule>

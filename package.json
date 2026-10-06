@@ -1,0 +1,1 @@
+{"name":"rasoltek-hosting","private":true,"scripts":{"build":"tailwindcss -i ./src/input.css -o ./assets/css/tailwind.css --minify"},"devDependencies":{"tailwindcss":"^3.4.17"}}

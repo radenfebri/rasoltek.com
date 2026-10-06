@@ -1,0 +1,36 @@
+.brand-image{position:relative;display:block;flex:none;width:116px;height:60px;overflow:hidden}
+.brand-image .brand-logo{position:absolute;top:50%;left:0;width:116px;height:116px;max-width:none;transform:translateY(-50%);border-radius:0;object-fit:contain}
+.brand-image .logo-for-dark{display:none}
+html[data-theme="dark"] .brand-image .logo-for-light{display:none}
+html[data-theme="dark"] .brand-image .logo-for-dark{display:block}
+.site-footer .brand-image{width:156px;height:82px}
+.site-footer .brand-image .brand-logo{width:156px;height:156px}
+.site-footer .brand-image .logo-for-light{display:none}
+.site-footer .brand-image .logo-for-dark{display:block}
+@media(max-width:640px){.brand-image{width:100px;height:52px}.brand-image .brand-logo{width:100px;height:100px}}
+
+/* Keep the previous page visible while the next PHP page is painted. */
+@view-transition{navigation:auto}
+.site-header{view-transition-name:site-header}
+::view-transition-group(*){animation-duration:.18s;animation-timing-function:ease-out}
+::view-transition-old(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){animation:site-page-in .18s ease-out both;mix-blend-mode:normal}
+::view-transition-old(site-header){display:none}
+::view-transition-new(site-header){animation:none;mix-blend-mode:normal}
+@keyframes site-page-in{from{opacity:0}to{opacity:1}}
+/* Keep the old mobile page painted until the next PHP page is ready, then swap instantly. */
+@media(max-width:960px){
+  @view-transition{navigation:auto}
+  .site-header{view-transition-name:none}
+  ::view-transition-group(*),
+  ::view-transition-old(root),
+  ::view-transition-new(root){animation:none!important;mix-blend-mode:normal}
+  .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  .map-node,
+  .infra-node,
+  .cloud-core:before,
+  .cloud-core:after,
+  .route-line:after{animation:none!important}
+  .btn:after{display:none}
+}
+@media(prefers-reduced-motion:reduce){@view-transition{navigation:none}.site-header{view-transition-name:none}}

@@ -1,0 +1,1 @@
+<?php /** @var array $faqs */ ?><div class="faq-list"><?php foreach($faqs as $i=>$faq): ?><details class="faq-item"<?= $i===0?' open':'' ?>><summary><?= e($faq[0]) ?><span>+</span></summary><div><p><?= e($faq[1]) ?></p></div></details><?php endforeach; ?></div>
